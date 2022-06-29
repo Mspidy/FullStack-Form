@@ -44,7 +44,16 @@ var forms = []AppForm{
 	},
 }
 
+// func fetchResponse(url string) string {
+// 	resp, _ := http.Get(url)
+// 	defer resp.Body.Close()
+// 	body, _ := ioutil.ReadAll(resp.Body)
+// 	return string(body)
+// }
+
 func main() {
+	// resp := fetchResponse("http://localhost:8000/person")
+	// fmt.Println(resp)
 	router := gin.Default()
 	router.Use(getCorsConfig())
 	db, err := sql.Open("mysql", "root:Prabhat@2022@tcp(127.0.0.1:3306)/form?charset=utf8&parseTime=True&loc=Local")
@@ -65,23 +74,84 @@ func main() {
 	})
 
 	router.POST("/person", func(c *gin.Context) {
-		FirstName := c.Request.FormValue("FirstName")
-		fmt.Println(FirstName)
-		LastName := c.Request.FormValue("LastName")
-		fmt.Println(LastName)
-		Password := c.Request.FormValue("Password")
-		Gender := c.Request.FormValue("Gender")
+		// FirstName := c.Request.FormValue("FirstName")
+		// fmt.Println(FirstName)
+		// LastName := c.Request.FormValue("LastName")
+		// fmt.Println(LastName)
+		// Password := c.Request.FormValue("Password")
+		// Gender := c.Request.FormValue("Gender")
+		// var userForm AppForm
 
-		_, err := db.Exec("INSERT INTO regForm(FirstName,LastName,Password,Gender)VALUES(?,?,?,?)", FirstName, LastName, Password, Gender)
-		if err != nil {
-			log.Fatalln(err)
+		// _, err := db.Exec("INSERT INTO regForm(FirstName,LastName,Password,Gender)VALUES(?,?,?,?)", FirstName, LastName, Password, Gender)
+		// if err != nil {
+		// 	log.Fatalln(err)
+		// }
+		// if err := c.Bind(&userForm); err == nil {
+		// 	fmt.Printf("user form - %+v\n", userForm)
+		// 	fmt.Println("insert regForm FirstName{}", FirstName)
+		// 	msg := fmt.Sprintf("insert successful %s", FirstName)
+		// 	c.JSON(http.StatusOK, gin.H{
+		// 		"msg":    msg,
+		// 		"status": "ok",
+		// 		"data":   userForm,
+		// 	})
+		// } else {
+		// 	fmt.Printf("user form -%+v\n", err)
+		// }
+
+		// fmt.Println("insert regForm FirstName{}", FirstName)
+		// msg := fmt.Sprintf("insert successful %s", FirstName)
+		// c.JSON(http.StatusOK, gin.H{
+		// 	"msg": msg,
+		// })
+		// c.JSON(http.StatusOK, gin.H{
+		// 	"msg": msg,
+		// 	"status": "ok",
+		// 	"data":   userForm,
+		// })
+
+		// var user AppForm
+		// c.Bind(&user)
+		// log.Println(user)
+		// if user.FirstName != "" && user.LastName != "" && user.Password != "" && user.Gender != ""{
+		// 	if insert, _ := db.Exec(`INSERT INTO user (FirstName, LastName, Password, Gender) VALUES (?, ?, ?, ?)`, user.FirstName, user.LastName, user.Password, user.Gender); insert != nil{
+		// 		_, err := insert.LastInsertId()
+		// 	if err == nil {
+		// 		content := &AppForm{
+		// 			Username:  user.FirstName,
+		// 			LastName:  user.LastName,
+		// 			Password: user.Password,
+		// 			Gender:  user.Gender,
+		// 		}
+		// 		c.JSON(201, content)
+		// 	} else {
+		// 		checkErr(err, "Insert failed")
+		// 	}
+		// } else {
+		// 	c.JSON(400, gin.H{"error": "Fields are empty"})
+		// }
+
+		// }
+		var user AppForm
+		c.Bind(&user)
+		log.Println(user)
+		if user.FirstName != "" && user.LastName != "" && user.Password != "" && user.Gender != "" {
+			if insert, _ := db.Exec(`INSERT INTO regForm(FirstName, LastName, Password, Gender) VALUES(?, ?, ?, ?)`, user.FirstName, user.LastName, user.Password, user.Gender); insert != nil {
+				_, err := insert.LastInsertId()
+				if err == nil {
+					content := &AppForm{
+						FirstName: user.FirstName,
+						LastName:  user.LastName,
+						Password:  user.Password,
+						Gender:    user.Gender,
+					}
+					c.JSON(http.StatusOK, gin.H{
+						"status": "ok",
+						"data":   content,
+					})
+				}
+			}
 		}
-
-		fmt.Println("insert regForm FirstName{}", FirstName)
-		msg := fmt.Sprintf("insert successful %s", FirstName)
-		c.JSON(http.StatusOK, gin.H{
-			"msg": msg,
-		})
 
 	})
 	// router.POST("/person", func(c *gin.Context) {

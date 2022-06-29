@@ -47,10 +47,10 @@ class Form extends Component{
     // let temp=this.setState
     console.log("temppppp",this.setState)
     let arr ={
-            FirstName:this.state.firstName,
-            LastName:this.state.lastName,
-            Password:this.state.password,
-            Gender:this.state.gender,
+            first_name:this.state.firstName,
+            last_name:this.state.lastName,
+            password:this.state.password,
+            gender:this.state.gender,
     }
     console.log(arr)
     axios.post('http://localhost:8000/person',arr)
@@ -84,7 +84,7 @@ class Form extends Component{
                         <option value="male">Male</option>
                         <option value="female">Female</option>
                     </select><br/><br/><br/>
-                    <input type="submit" value="Submit"/>
+                    <input type="submit" value="Submit"/> 
                 </form>
             </div>
         )
